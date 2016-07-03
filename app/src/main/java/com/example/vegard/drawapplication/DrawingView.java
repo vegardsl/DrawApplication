@@ -8,7 +8,6 @@ import android.graphics.Path;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
-import android.view.View;
 import android.widget.ScrollView;
 
 /**
@@ -25,8 +24,15 @@ public class DrawingView extends ScrollView {
     //canvas bitmap
     private Bitmap canvasBitmap;
 
+    Context context;
+    AttributeSet attributeSet;
+
     public DrawingView(Context context, AttributeSet attrs) {
         super(context, attrs);
+
+        this.context = context;
+        this.attributeSet = attrs;
+
         setupDrawing();
     }
 
@@ -82,4 +88,5 @@ public class DrawingView extends ScrollView {
         invalidate();
         return true;
     }
+
 }

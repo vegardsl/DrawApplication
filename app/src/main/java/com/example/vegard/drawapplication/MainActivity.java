@@ -1,21 +1,17 @@
 package com.example.vegard.drawapplication;
 
 import android.app.Activity;
-import android.app.FragmentManager;
 import android.graphics.Color;
 import android.graphics.drawable.ShapeDrawable;
 import android.graphics.drawable.shapes.OvalShape;
-import android.graphics.drawable.shapes.RectShape;
+import android.graphics.pdf.PdfDocument;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
-import android.widget.ScrollView;
 import android.widget.TextView;
 
 
@@ -63,6 +59,9 @@ public class MainActivity extends Activity {
         i = i+50;
         textView.setText("Yo!");
         frame.addView(textView);
+
+        final PdfDocument document = new PdfDocument();
+        writePDFDocument(document);
     }
 
     @Override
@@ -85,5 +84,28 @@ public class MainActivity extends Activity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    private void writePDFDocument(final PdfDocument pdfDocument) {
+
+        // crate a page description
+        PdfDocument.PageInfo pageInfo = new PdfDocument.PageInfo.Builder(500, 500, 1).create();
+
+        // start a page
+        PdfDocument.Page page = pdfDocument.startPage(pageInfo);
+
+        View contentView = (View)findViewById(R.id.drawing);
+
+        // draw view on the page
+        int measureWidth = View.MeasureSpec.makeMeasureSpec(page.getCanvas().getWidth(), View.MeasureSpec.EXACTLY);
+        int measuredHeight = View.MeasureSpec.makeMeasureSpec(page.getCanvas().getHeight(), View.MeasureSpec.EXACTLY);
+        contentView.measure(measureWidth, measuredHeight);
+        contentView.layout(0, 0, page.getCanvas().getWidth(), page.getCanvas().getHeight());
+        contentView.draw(page.getCanvas());
+
+        // finish the page
+        pdfDocument.finishPage(page);
+
+        Log.i("info","Pdf created");
     }
 }
